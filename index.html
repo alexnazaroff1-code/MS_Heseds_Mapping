@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Heseds — Material Support Criteria Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f7f5f0;--white:#ffffff;--ink:#1c1c1e;--gold:#9a7c3f;
+    --red:#c0392b;--red-bg:#fdf2f0;--amber:#b05c0a;--amber-bg:#fef6ee;
+    --green:#1a6640;--green-bg:#f0faf4;--blue:#1a3c6e;--blue-bg:#eef3fc;
+    --gray:#6b6b6b;--border:#e6e2da;--mid:#d6d2c8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.6;}
+  .page{max-width:980px;margin:0 auto;padding:0 48px 80px;}
+
+  header{padding:40px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:28px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+  h1{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.15;margin-bottom:5px;}
+  .subtitle{color:var(--gray);font-size:13px;font-weight:300;}
+
+  .framing{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+  .frame-cell{padding:16px 20px;background:var(--white);}
+  .frame-cell:first-child{border-right:1px solid var(--border);}
+  .frame-cell .fc-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);margin-bottom:5px;}
+  .frame-cell p{font-size:12.5px;line-height:1.55;}
+  .frame-cell.dim2{background:#fdf2f0;}
+  .frame-cell.dim2 .fc-label{color:var(--red);}
+
+  .legend{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+  .legend-title{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);}
+  .leg{display:flex;align-items:center;gap:6px;font-size:12px;}
+
+  .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:28px;background:var(--white);}
+  .strip-cell{padding:16px 18px;border-right:1px solid var(--border);}
+  .strip-cell:last-child{border-right:none;}
+  .strip-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1;margin-bottom:3px;}
+  .strip-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;}
+  .strip-sub{font-size:11px;color:var(--gray);}
+  .s-red .strip-num,.s-red .strip-lbl{color:var(--red);}
+  .s-amber .strip-num,.s-amber .strip-lbl{color:var(--amber);}
+  .s-green .strip-num,.s-green .strip-lbl{color:var(--green);}
+  .s-blue .strip-num,.s-blue .strip-lbl{color:var(--blue);}
+
+  .hesed-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .hesed-table thead tr{background:var(--ink);}
+  .hesed-table thead th{padding:10px 14px;text-align:left;font-size:9.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);}
+  .hesed-table thead th.col-d1{color:#f0d080;}
+  .hesed-table thead th.col-d2{color:#e87c6c;}
+  .hesed-table tbody tr{border-bottom:1px solid var(--border);}
+  .hesed-table tbody tr:last-child{border-bottom:none;}
+  .hesed-table tbody tr:hover{background:#faf9f6;}
+  .hesed-table td{padding:10px 14px;vertical-align:middle;}
+
+  .grp td{background:var(--bg);padding:7px 14px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);border-top:1px solid var(--mid);}
+
+  .h-name{font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .h-code{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);margin-top:1px;}
+
+  .pini-mark{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;}
+  .pm-scope{background:#dbeafe;color:#1e40af;}
+  .pm-change{background:#f1f5f9;color:#475569;}
+  .pm-modelc{background:#fef3c7;color:#92400e;}
+
+  .d1-hesed{display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#78350f;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;}
+  .d1-jdc{display:inline-flex;align-items:center;gap:4px;background:var(--blue-bg);color:var(--blue);padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;}
+
+  .d2-same{display:inline-flex;align-items:center;gap:4px;background:var(--red-bg);color:var(--red);padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+  .d2-diff{display:inline-flex;align-items:center;gap:4px;background:var(--green-bg);color:var(--green);padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+  .d2-incomplete{display:inline-flex;align-items:center;gap:4px;background:var(--amber-bg);color:var(--amber);padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+  .d2-missing{display:inline-flex;align-items:center;gap:4px;background:var(--red-bg);color:var(--red);padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+
+  .cv-std{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--red);}
+  .cv-diff{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--green);font-weight:500;}
+  .cv-miss{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--red);font-style:italic;}
+  .cv-gray{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gray);}
+
+  footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="eyebrow">JDC FSU · Senior Leadership · Confidential</div>
+  <h1>Pilot Heseds — Material Support Criteria Review</h1>
+  <div class="subtitle">Olga Statland's July 2025 strategic change list · Bank Card eligibility 2026</div>
+</header>
+
+<div class="framing">
+  <div class="frame-cell">
+    <div class="fc-label">Dimension 1 — Who entered the criteria?</div>
+    <p>Did the <strong>Hesed itself</strong> define its eligibility rules in ServiceNow, or did <strong>JDC Region</strong> set them centrally? Hesed-entered signals that the Hesed is taking ownership of the process.</p>
+  </div>
+  <div class="frame-cell dim2">
+    <div class="fc-label">Dimension 2 — Same as regional standard?</div>
+    <p>If a pilot Hesed's criteria are <strong>identical to the regional template</strong>, no strategic change has happened. <strong>Different = progress.</strong> Same = the pilot work has not started.</p>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-title">Pini's scope —</span>
+  <div class="leg"><span class="pini-mark pm-scope">Jan 2027</span> In scope for this process</div>
+  <div class="leg"><span class="pini-mark pm-modelc">Model C</span> Borderline — separate treatment</div>
+  <div class="leg"><span class="pini-mark pm-change">Change Team</span> Already handled separately (Jul 2026)</div>
+</div>
+
+<div class="summary-strip">
+  <div class="strip-cell s-red">
+    <div class="strip-num">9</div>
+    <div class="strip-lbl">Same as standard</div>
+    <div class="strip-sub">No change from regional template</div>
+  </div>
+  <div class="strip-cell s-amber">
+    <div class="strip-num">4</div>
+    <div class="strip-lbl">Incomplete / Missing</div>
+    <div class="strip-sub">Not in ServiceNow or no thresholds</div>
+  </div>
+  <div class="strip-cell s-green">
+    <div class="strip-num">6</div>
+    <div class="strip-lbl">Different from standard</div>
+    <div class="strip-sub">Criteria adapted from template</div>
+  </div>
+  <div class="strip-cell s-blue">
+    <div class="strip-num">6</div>
+    <div class="strip-lbl">Hesed-entered</div>
+    <div class="strip-sub">Hesed took ownership of criteria</div>
+  </div>
+</div>
+
+<table class="hesed-table">
+  <thead>
+    <tr>
+      <th style="width:155px">Hesed</th>
+      <th style="width:100px" class="col-d1">Dim 1 · Type</th>
+      <th style="width:115px" class="col-d1">Entered By</th>
+      <th style="width:120px" class="col-d2">Dim 2 · vs. Standard</th>
+      <th>Criteria in System</th>
+      <th style="width:125px">Regional Standard</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr class="grp"><td colspan="6">Ukraine</td></tr>
+
+    <tr>
+      <td><div class="h-name">Kyiv <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">3084</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">nina-go</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="cv-diff">26,600 / 5,600 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Lvov</div><div class="h-code">2207</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">nina-go</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="cv-diff">24,000 / 6,000 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Khmelnitsky <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">2541</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">nina-go</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">30,000 / 5,600 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Zaporizhzhia</div><div class="h-code">1500</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td><span class="cv-gray">KorablyovaMarina</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="cv-diff">26,600 / 5,600 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Vinnitsa</div><div class="h-code">2088</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td><span class="cv-gray">TSarevskayaOlga</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">30,000 / 7,000 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Poltava</div><div class="h-code">2224</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td><span class="cv-gray">TarshisYevgeni</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="cv-diff">24,000 / 8,000 / 8,000 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Krivoy Rog</div><div class="h-code">1233</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td><span class="cv-gray">ShatiloAleksandr</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="cv-diff">24,000 / 7,000 / 5,000 UAH</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Odessa</div><div class="h-code">1415</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td><span class="cv-gray">KoganovskiyIgor</span></td>
+      <td><span class="d2-missing">✗ No thresholds</span></td>
+      <td><span class="cv-miss">Entry exists — no income thresholds defined</span></td>
+      <td><span class="cv-gray">30,000 / 6,000</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Georgia</td></tr>
+
+    <tr>
+      <td><div class="h-name">Tbilisi</div><div class="h-code">604</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">AlexanderVo</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">600 / 600 / 600 GEL</span></td>
+      <td><span class="cv-gray">600 GEL (both cities identical)</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Kutaisi <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">2538</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">AlexanderVo</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">600 / 600 / 600 GEL</span></td>
+      <td><span class="cv-gray">600 GEL (both cities identical)</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Moldova</td></tr>
+
+    <tr>
+      <td><div class="h-name">Kishinev <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">1226</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">SergeyFr</span></td>
+      <td><span class="d2-incomplete">⚠ Incomplete</span></td>
+      <td><span class="cv-miss">Two entries — one has 4,012 MDL, one has no threshold</span></td>
+      <td><span class="cv-gray">Only Moldova Hesed</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Tiraspol <span class="pini-mark pm-modelc">Model C</span></div><div class="h-code">1292</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">SergeyFr</span></td>
+      <td><span class="d2-incomplete">⚠ Incomplete</span></td>
+      <td><span class="cv-miss">Two entries — one has 3,149 MDL, one has no threshold</span></td>
+      <td><span class="cv-gray">Only Moldova Hesed</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Belarus — NN threshold identical across all Heseds (2,850 BYR) · Zero-income clause absent in all</td></tr>
+
+    <tr>
+      <td><div class="h-name">Minsk <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">602</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">InnaRos</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">2,850 / 570 BYR</span></td>
+      <td><span class="cv-gray">2,850 BYR (all Belarus)</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Gomel <span class="pini-mark pm-modelc">Model C</span></div><div class="h-code">1492</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">InnaRos</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">2,850 / 804 BYR</span></td>
+      <td><span class="cv-gray">2,850 BYR (all Belarus)</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Bobruisk <span class="pini-mark pm-modelc">Model C</span></div><div class="h-code">2036</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">InnaRos</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">2,850 / 687 BYR</span></td>
+      <td><span class="cv-gray">2,850 BYR (all Belarus)</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Kazakhstan</td></tr>
+
+    <tr>
+      <td><div class="h-name">Almaty</div><div class="h-code">2228</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">AleksanderTe</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">330,000 / 173,000 KZT</span></td>
+      <td><span class="cv-gray">~330,000 KZT (all KZ cities)</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Kyrgyzstan</td></tr>
+
+    <tr>
+      <td><div class="h-name">Bishkek</div><div class="h-code">2229</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td><span class="cv-gray">VolkovichAlla</span></td>
+      <td><span class="d2-missing">⚠ Expired</span></td>
+      <td><span class="cv-miss">Was 60,000 / 33,000 KGS — expired March 4, 2026</span></td>
+      <td><span class="cv-gray">Only KG Hesed</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Russia — Ural Region</td></tr>
+
+    <tr>
+      <td><div class="h-name">Yekaterinburg <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">2400</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">NataliaTi</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="cv-diff">55,000 / 22,000 RUB + Holocaust clause</span></td>
+      <td><span class="cv-gray">23,000 RUB</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Chelyabinsk</div><div class="h-code">2221</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">NataliaTi</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">23,000 RUB</span></td>
+      <td><span class="cv-gray">23,000 RUB</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Kazan</div><div class="h-code">3070</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">NataliaTi</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">23,000 RUB</span></td>
+      <td><span class="cv-gray">23,000 RUB</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Russia — Rostov &amp; South Region (incl. Donetsk &amp; Lugansk territories)</td></tr>
+
+    <tr>
+      <td><div class="h-name">Krasnodar</div><div class="h-code">2587</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">LudmilaTe</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="cv-std">40,000 / 23,000 RUB</span></td>
+      <td><span class="cv-gray">40,000 / 23,000 RUB</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Russia — Moscow, Central &amp; Crimea Region</td></tr>
+
+    <tr>
+      <td><div class="h-name">Bryansk <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">1322</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">Gileva N.</span></td>
+      <td><span class="d2-missing">✗ Not in ServiceNow</span></td>
+      <td><span class="cv-miss">Local 1C system only — not migrated</span></td>
+      <td><span class="cv-gray">—</span></td>
+    </tr>
+    <tr>
+      <td><div class="h-name">Smolensk</div><div class="h-code">3027</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">Gileva N.</span></td>
+      <td><span class="d2-missing">✗ Not in ServiceNow</span></td>
+      <td><span class="cv-miss">Local 1C system only — not migrated</span></td>
+      <td><span class="cv-gray">—</span></td>
+    </tr>
+
+    <tr class="grp"><td colspan="6">Russia — Northwest Region</td></tr>
+    <tr>
+      <td><div class="h-name">St. Petersburg <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">Hesed Avraham · Eva</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td><span class="cv-gray">—</span></td>
+      <td><span class="d2-missing">✗ Not in data</span></td>
+      <td><span class="cv-miss">Not present in the criteria file</span></td>
+      <td><span class="cv-gray">—</span></td>
+    </tr>
+
+  </tbody>
+</table>
+
+<footer>
+  <span>JDC FSU · Material Support Pilot Review · March 2026</span>
+  <span>Source: eligibility_criteria_bank_card_2026_all_regions.xlsx · Olga Statland email July 2025</span>
+  <span>Confidential — Senior Leadership</span>
+</footer>
+
+</div>
+</body>
+</html>
