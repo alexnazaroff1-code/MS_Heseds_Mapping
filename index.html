@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Heseds — Material Support Criteria Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f7f5f0;--white:#ffffff;--ink:#1c1c1e;--gold:#9a7c3f;
+    --red:#c0392b;--red-bg:#fdf2f0;--amber:#b05c0a;--amber-bg:#fef6ee;
+    --green:#1a6640;--green-bg:#f0faf4;--blue:#1a3c6e;--blue-bg:#eef3fc;
+    --gray:#6b6b6b;--border:#e6e2da;--mid:#d6d2c8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:12.5px;line-height:1.6;}
+  .page{max-width:1200px;margin:0 auto;padding:0 44px 80px;}
+
+  header{padding:40px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:28px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+  h1{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.15;margin-bottom:5px;}
+  .subtitle{color:var(--gray);font-size:13px;font-weight:300;}
+
+  .framing{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:22px;}
+  .frame-cell{padding:14px 18px;background:var(--white);}
+  .frame-cell:first-child{border-right:1px solid var(--border);}
+  .fc-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}
+  .frame-cell p{font-size:12px;line-height:1.5;}
+  .frame-cell.dim2{background:#fdf2f0;}
+  .frame-cell.dim2 .fc-label{color:var(--red);}
+
+  .legend{display:flex;gap:16px;margin-bottom:22px;flex-wrap:wrap;align-items:center;}
+  .legend-title{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);}
+  .leg{display:flex;align-items:center;gap:6px;font-size:12px;}
+
+  .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:28px;background:var(--white);}
+  .strip-cell{padding:14px 16px;border-right:1px solid var(--border);}
+  .strip-cell:last-child{border-right:none;}
+  .strip-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:3px;}
+  .strip-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;}
+  .strip-sub{font-size:11px;color:var(--gray);}
+  .s-red .strip-num,.s-red .strip-lbl{color:var(--red);}
+  .s-amber .strip-num,.s-amber .strip-lbl{color:var(--amber);}
+  .s-green .strip-num,.s-green .strip-lbl{color:var(--green);}
+  .s-blue .strip-num,.s-blue .strip-lbl{color:var(--blue);}
+
+  .hesed-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .hesed-table thead tr{background:var(--ink);}
+  .hesed-table thead th{padding:9px 11px;text-align:left;font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+  .hesed-table thead th.col-d1{color:#f0d080;}
+  .hesed-table thead th.col-nv{color:#fca5a5;}
+  .hesed-table thead th.col-nvn{color:#93c5fd;}
+  .hesed-table thead th.col-d2{color:#86efac;}
+  .hesed-table tbody tr{border-bottom:1px solid var(--border);}
+  .hesed-table tbody tr:last-child{border-bottom:none;}
+  .hesed-table tbody tr:hover{background:#faf9f6;}
+  .hesed-table td{padding:9px 11px;vertical-align:top;}
+
+  .grp td{background:var(--bg);padding:6px 11px;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);border-top:1px solid var(--mid);}
+
+  .h-name{font-weight:600;font-size:12.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px;}
+  .h-code{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);}
+
+  .pini-mark{display:inline-flex;padding:1px 5px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;}
+  .pm-scope{background:#dbeafe;color:#1e40af;}
+  .pm-change{background:#f1f5f9;color:#475569;}
+  .pm-modelc{background:#fef3c7;color:#92400e;}
+
+  .d1-hesed{display:inline-flex;background:#fef3c7;color:#78350f;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+  .d1-jdc{display:inline-flex;background:var(--blue-bg);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+
+  /* Threshold tiers */
+  .tier{display:flex;align-items:baseline;gap:5px;margin-bottom:3px;}
+  .tier:last-child{margin-bottom:0;}
+  .tier-cond{font-size:9.5px;color:var(--gray);white-space:nowrap;}
+  .tier-val{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500;}
+  .tier-val.green{color:var(--green);}
+  .tier-val.red{color:var(--red);}
+  .tier-val.amber{color:var(--amber);}
+  .tier-val.gap{color:var(--red);font-style:italic;}
+  .tier-val.gray{color:var(--gray);font-style:italic;}
+
+  /* Dim 2 */
+  .d2-diff{display:inline-block;background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;}
+  .d2-same{display:inline-block;background:var(--red-bg);color:var(--red);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;}
+  .d2-gap{display:inline-block;background:var(--red-bg);color:var(--red);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;}
+  .d2-na{display:inline-block;background:#f4f4f5;color:var(--gray);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;}
+
+  /* Regional standard cell */
+  .std-cell{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--gray);}
+  .std-cell .std-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mid);margin-bottom:1px;}
+
+  .mono{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gray);}
+
+  footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="eyebrow">JDC FSU · Senior Leadership · Confidential</div>
+  <h1>Pilot Heseds — Material Support Criteria Review</h1>
+  <div class="subtitle">Olga Statland's July 2025 strategic change list · Bank Card eligibility 2026 · Each threshold = maximum monthly income to qualify</div>
+</header>
+
+<div class="framing">
+  <div class="frame-cell">
+    <div class="fc-label">Dimension 1 — Who entered the criteria?</div>
+    <p>Did the <strong>Hesed itself</strong> define its eligibility rules, or did <strong>JDC Region</strong> set them centrally? Hesed-entered signals ownership of the process.</p>
+  </div>
+  <div class="frame-cell dim2">
+    <div class="fc-label">Dimension 2 — Same as regional standard?</div>
+    <p>Assessed <strong>separately</strong> for Nazi Victims (NV) and Non-Nazi Victims (NNV). Where multiple tiers exist, all tiers are shown. Same = no change has happened.</p>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-title">Pini's scope —</span>
+  <div class="leg"><span class="pini-mark pm-scope">Jan 2027</span> In scope for this process</div>
+  <div class="leg"><span class="pini-mark pm-modelc">Model C</span> Borderline — separate treatment</div>
+  <div class="leg"><span class="pini-mark pm-change">Change Team</span> Handled separately (Jul 2026)</div>
+</div>
+
+<div class="summary-strip">
+  <div class="strip-cell s-red">
+    <div class="strip-num">6</div>
+    <div class="strip-lbl">Same</div>
+    <div class="strip-sub">No change from regional template</div>
+  </div>
+  <div class="strip-cell s-amber">
+    <div class="strip-num">6</div>
+    <div class="strip-lbl">Gap / Missing</div>
+    <div class="strip-sub">NN absent, no income cap, expired, or not in system</div>
+  </div>
+  <div class="strip-cell s-green">
+    <div class="strip-num">11</div>
+    <div class="strip-lbl">Different</div>
+    <div class="strip-sub">Criteria adapted from template</div>
+  </div>
+  <div class="strip-cell s-blue">
+    <div class="strip-num">6</div>
+    <div class="strip-lbl">Hesed-entered</div>
+    <div class="strip-sub">Hesed took ownership of criteria</div>
+  </div>
+</div>
+
+<table class="hesed-table">
+  <thead>
+    <tr>
+      <th style="width:148px">Hesed</th>
+      <th style="width:88px" class="col-d1">Dim 1 · Type</th>
+      <th style="width:108px" class="col-d1">Entered By</th>
+      <th style="width:175px" class="col-nv">NV Criteria (Nazi Victims)<br><span style="font-weight:400;font-size:8px;opacity:0.7">max monthly income to qualify</span></th>
+      <th style="width:175px" class="col-nvn">NNV Criteria (Non-Nazi Victims)<br><span style="font-weight:400;font-size:8px;opacity:0.7">max monthly income to qualify</span></th>
+      <th style="width:78px" class="col-d2">Dim 2<br>NV</th>
+      <th style="width:78px" class="col-d2">Dim 2<br>NNV</th>
+      <th style="width:120px">Regional Standard</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- UKRAINE -->
+    <tr class="grp"><td colspan="8">Ukraine — Regional standard: NV 30,000 UAH · NNV 6,000 UAH (single threshold, no sub-tiers)</td></tr>
+
+    <tr>
+      <td><div class="h-name">Kyiv <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">3084</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">nina-go</td>
+      <td><div class="tier"><span class="tier-val green">&lt; 26,600 UAH</span></div></td>
+      <td><div class="tier"><span class="tier-val green">&lt; 5,600 UAH</span></div></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Lvov</div><div class="h-code">2207</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">nina-go</td>
+      <td><div class="tier"><span class="tier-val green">&lt; 24,000 UAH</span></div></td>
+      <td><div class="tier"><span class="tier-val red">&lt; 6,000 UAH</span></div></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Khmelnitsky <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">2541</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">nina-go</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 30,000 UAH</span></div></td>
+      <td><div class="tier"><span class="tier-val green">&lt; 5,600 UAH</span><span class="tier-cond">−7%</span></div></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Zaporizhzhia</div><div class="h-code">1500</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td class="mono">KorablyovaMarina</td>
+      <td><div class="tier"><span class="tier-val green">&lt; 26,600 UAH</span></div></td>
+      <td><div class="tier"><span class="tier-val green">&lt; 5,600 UAH</span></div></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Vinnitsa</div><div class="h-code">2088</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td class="mono">TSarevskayaOlga</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 30,000 UAH</span></div></td>
+      <td><div class="tier"><span class="tier-val green">&lt; 7,000 UAH</span><span class="tier-cond">+17%</span></div></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Poltava</div><div class="h-code">2224</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td class="mono">TarshisYevgeni</td>
+      <td><div class="tier"><span class="tier-val green">&lt; 24,000 UAH</span></div></td>
+      <td>
+        <div class="tier"><span class="tier-cond">Single:</span><span class="tier-val green">&lt; 8,000 UAH</span></div>
+        <div class="tier"><span class="tier-cond">Family:</span><span class="tier-val green">&lt; 8,000 UAH</span></div>
+      </td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Krivoy Rog</div><div class="h-code">1233</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td class="mono">ShatiloAleksandr</td>
+      <td><div class="tier"><span class="tier-val green">&lt; 24,000 UAH</span></div></td>
+      <td>
+        <div class="tier"><span class="tier-cond">Jewish:</span><span class="tier-val green">&lt; 7,000 UAH</span></div>
+        <div class="tier"><span class="tier-cond">Spouse:</span><span class="tier-val green">&lt; 5,000 UAH</span></div>
+      </td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Odessa</div><div class="h-code">1415</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td class="mono">KoganovskiyIgor</td>
+      <td>
+        <div class="tier"><span class="tier-cond">Single:</span><span class="tier-val green">&lt; 30,500 UAH</span></div>
+        <div class="tier"><span class="tier-cond">Family:</span><span class="tier-val green">&lt; 24,200 UAH</span></div>
+      </td>
+      <td><div class="tier"><span class="tier-val red">&lt; 6,000 UAH</span></div></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV 30,000<br>NNV 6,000</td>
+    </tr>
+
+    <!-- GEORGIA -->
+    <tr class="grp"><td colspan="8">Georgia — NV and NNV threshold identical in both cities · No country standard to differentiate</td></tr>
+
+    <tr>
+      <td><div class="h-name">Tbilisi</div><div class="h-code">604</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">AlexanderVo</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 600 GEL</span></div><div style="font-size:9px;color:var(--amber);margin-top:2px">⚠ 2 active criteria in system</div></td>
+      <td><div class="tier"><span class="tier-val red">&lt; 600 GEL</span></div></td>
+      <td><span class="d2-same">✗ Same as KU</span></td>
+      <td><span class="d2-same">✗ Same as KU</span></td>
+      <td class="std-cell">Both cities<br>600 GEL</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Kutaisi <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">2538</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">AlexanderVo</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 600 GEL</span></div><div style="font-size:9px;color:var(--amber);margin-top:2px">⚠ 2 active criteria in system</div></td>
+      <td><div class="tier"><span class="tier-val red">&lt; 600 GEL</span></div></td>
+      <td><span class="d2-same">✗ Same as TB</span></td>
+      <td><span class="d2-same">✗ Same as TB</span></td>
+      <td class="std-cell">Both cities<br>600 GEL</td>
+    </tr>
+
+    <!-- MOLDOVA -->
+    <tr class="grp"><td colspan="8">Moldova — Only 2 Heseds in country · NV block has no income ceiling: all NN clients with any income qualify</td></tr>
+
+    <tr>
+      <td><div class="h-name">Kishinev <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">1226</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">SergeyFr</td>
+      <td><div class="tier"><span class="tier-val gap">income &gt; 0 only</span></div><div style="font-size:9.5px;color:var(--red);margin-top:2px">No upper limit — all NV qualify</div></td>
+      <td><div class="tier"><span class="tier-val green">&lt; 4,012 MDL</span></div></td>
+      <td><span class="d2-gap">⚠ No cap</span></td>
+      <td><span class="d2-diff">✓ vs Tiraspol</span></td>
+      <td class="std-cell">No country<br>standard</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Tiraspol <span class="pini-mark pm-modelc">Model C</span></div><div class="h-code">1292</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">SergeyFr</td>
+      <td><div class="tier"><span class="tier-val gap">income &gt; 0 only</span></div><div style="font-size:9.5px;color:var(--red);margin-top:2px">No upper limit — all NV qualify</div></td>
+      <td><div class="tier"><span class="tier-val green">&lt; 3,149 MDL</span></div></td>
+      <td><span class="d2-gap">⚠ No cap</span></td>
+      <td><span class="d2-diff">✓ vs Kishinev</span></td>
+      <td class="std-cell">No country<br>standard</td>
+    </tr>
+
+    <!-- BELARUS -->
+    <tr class="grp"><td colspan="8">Belarus — NV 2,850 BYR identical across all 4 cities (centrally set) · NNV: every city has a unique value, no common standard · NNV applies to singles only</td></tr>
+
+    <tr>
+      <td><div class="h-name">Minsk <span class="pini-mark pm-scope">Jan 2027</span></div><div class="h-code">602</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">InnaRos</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 2,850 BYR</span></div></td>
+      <td><div class="tier"><span class="tier-cond">Singles:</span><span class="tier-val amber">&lt; 570 BYR</span></div><div style="font-size:9px;color:var(--gray);margin-top:1px">Unique to Minsk; 4 cities all differ</div></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-na">— Unique</span></td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Gomel <span class="pini-mark pm-modelc">Model C</span></div><div class="h-code">1492</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">InnaRos</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 2,850 BYR</span></div></td>
+      <td><div class="tier"><span class="tier-cond">Singles:</span><span class="tier-val amber">&lt; 804 BYR</span></div><div style="font-size:9px;color:var(--gray);margin-top:1px">Unique to Gomel; 4 cities all differ</div></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-na">— Unique</span></td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Bobruisk <span class="pini-mark pm-modelc">Model C</span></div><div class="h-code">2036</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">InnaRos</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 2,850 BYR</span></div></td>
+      <td><div class="tier"><span class="tier-cond">Singles:</span><span class="tier-val amber">&lt; 687 BYR</span></div></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-na">— Unique</span></td>
+    </tr>
+
+    <!-- KAZAKHSTAN -->
+    <tr class="grp"><td colspan="8">Kazakhstan — ~330,000 KZT (NN) / ~163–173,000 KZT (Non-NN) across all KZ Heseds</td></tr>
+
+    <tr>
+      <td><div class="h-name">Almaty</div><div class="h-code">2228</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">AleksanderTe</td>
+      <td><div class="tier"><span class="tier-val">&lt; 330,000 KZT</span></div><div style="font-size:9px;color:var(--gray);margin-top:1px">Pavlodar &amp; Aktyubinsk: 333,000</div></td>
+      <td><div class="tier"><span class="tier-val">&lt; 173,000 KZT</span></div><div style="font-size:9px;color:var(--gray);margin-top:1px">Pavlodar 163,500 · Aktyubinsk 168,100 · Karaganda 145,000</div></td>
+      <td><span class="d2-na">— No standard</span></td>
+      <td><span class="d2-na">— No standard</span></td>
+      <td class="std-cell">No single<br>country std</td>
+    </tr>
+
+    <!-- KYRGYZSTAN -->
+    <tr class="grp"><td colspan="8">Kyrgyzstan — Only Hesed in country · Criteria expired March 4, 2026</td></tr>
+
+    <tr>
+      <td><div class="h-name">Bishkek</div><div class="h-code">2229</div></td>
+      <td><span class="d1-hesed">Hesed ★</span></td>
+      <td class="mono">VolkovichAlla</td>
+      <td><div class="tier"><span class="tier-val gray">&lt; 60,000 KGS</span></div><div style="font-size:9px;color:var(--red);margin-top:1px">Expired</div></td>
+      <td><div class="tier"><span class="tier-val gray">&lt; 33,000 KGS</span></div><div style="font-size:9px;color:var(--red);margin-top:1px">Expired</div></td>
+      <td><span class="d2-gap">⚠ Expired</span></td>
+      <td><span class="d2-gap">⚠ Expired</span></td>
+      <td class="std-cell">Only KG<br>Hesed</td>
+    </tr>
+
+    <!-- RUSSIA URAL -->
+    <tr class="grp"><td colspan="8">Russia — Ural Region · Ural standard (ServiceNow): NNV 23,000 RUB · NV not defined in standard — gap applies to whole region · Yekaterinburg is the only Ural city that defined NV criteria</td></tr>
+
+    <tr>
+      <td><div class="h-name">Yekaterinburg <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">2400</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">NataliaTi</td>
+      <td>
+        <div class="tier"><span class="tier-cond">Holocaust:</span><span class="tier-val green">No limit</span></div>
+        <div class="tier"><span class="tier-cond">Other NN:</span><span class="tier-val green">&lt; 55,000 RUB</span></div>
+      </td>
+      <td><div class="tier"><span class="tier-val green">&lt; 22,000 RUB</span></div></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td><span class="d2-diff">✓ Different</span></td>
+      <td class="std-cell">NV not defined<br>NNV 23,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Chelyabinsk</div><div class="h-code">2221</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">NataliaTi</td>
+      <td><div class="tier"><span class="tier-val gap">Not defined</span></div><div style="font-size:9px;color:var(--red);margin-top:1px">Holocaust survivors excluded</div></td>
+      <td><div class="tier"><span class="tier-val red">&lt; 23,000 RUB</span></div></td>
+      <td><span class="d2-gap">✗ Missing</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV not defined<br>NNV 23,000</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Kazan</div><div class="h-code">3070</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">NataliaTi</td>
+      <td><div class="tier"><span class="tier-val gap">Not defined</span></div><div style="font-size:9px;color:var(--red);margin-top:1px">Holocaust survivors excluded</div></td>
+      <td><div class="tier"><span class="tier-val red">&lt; 23,000 RUB</span></div></td>
+      <td><span class="d2-gap">✗ Missing</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV not defined<br>NNV 23,000</td>
+    </tr>
+
+    <!-- RUSSIA SOUTH -->
+    <tr class="grp"><td colspan="8">Russia — Rostov &amp; South Region (incl. Donetsk &amp; Lugansk) · South standard: NV 40,000 / NNV 23,000 RUB</td></tr>
+
+    <tr>
+      <td><div class="h-name">Krasnodar</div><div class="h-code">2587</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">LudmilaTe</td>
+      <td><div class="tier"><span class="tier-val red">&lt; 40,000 RUB</span></div></td>
+      <td><div class="tier"><span class="tier-val red">&lt; 23,000 RUB</span></div></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV 40,000<br>NNV 23,000</td>
+    </tr>
+
+    <!-- RUSSIA CENTRAL -->
+    <tr class="grp"><td colspan="8">Russia — Moscow, Central &amp; Crimea Region · All cities in 1C only (not ServiceNow) · Regional standard exists in 1C: NV+Holocaust no limit / NV 55,000 / NNV Righteous 40,000 / NNV Jewish 16,000 RUB</td></tr>
+
+    <tr>
+      <td><div class="h-name">Bryansk <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">1322</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">Gileva N.</td>
+      <td>
+        <div class="tier"><span class="tier-cond">Holocaust:</span><span class="tier-val green">No limit (1C)</span></div>
+        <div class="tier"><span class="tier-cond">Other NN:</span><span class="tier-val green">&lt; 55,000 RUB (1C)</span></div>
+      </td>
+      <td>
+        <div class="tier"><span class="tier-cond">Righteous:</span><span class="tier-val green">&lt; 40,000 RUB (1C)</span></div>
+        <div class="tier"><span class="tier-cond">Jewish:</span><span class="tier-val green">&lt; 16,000 RUB (1C)</span></div>
+      </td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV 55,000<br>NNV 16–40,000 (1C)</td>
+    </tr>
+
+    <tr>
+      <td><div class="h-name">Smolensk</div><div class="h-code">3027</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">Gileva N.</td>
+      <td>
+        <div class="tier"><span class="tier-cond">Holocaust:</span><span class="tier-val green">No limit (1C)</span></div>
+        <div class="tier"><span class="tier-cond">Other NN:</span><span class="tier-val green">&lt; 55,000 RUB (1C)</span></div>
+      </td>
+      <td>
+        <div class="tier"><span class="tier-cond">Righteous:</span><span class="tier-val green">&lt; 40,000 RUB (1C)</span></div>
+        <div class="tier"><span class="tier-cond">Jewish:</span><span class="tier-val green">&lt; 16,000 RUB (1C)</span></div>
+      </td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td><span class="d2-same">✗ Same</span></td>
+      <td class="std-cell">NV 55,000<br>NNV 16–40,000 (1C)</td>
+    </tr>
+
+    <!-- RUSSIA NORTHWEST -->
+    <tr class="grp"><td colspan="8">Russia — Northwest Region</td></tr>
+
+    <tr>
+      <td><div class="h-name">St. Petersburg <span class="pini-mark pm-change">Change Team</span></div><div class="h-code">Avraham · Eva</div></td>
+      <td><span class="d1-jdc">JDC Region</span></td>
+      <td class="mono">—</td>
+      <td><div class="tier"><span class="tier-val gray">Not in data</span></div></td>
+      <td><div class="tier"><span class="tier-val gray">Not in data</span></div></td>
+      <td><span class="d2-gap">✗ Absent</span></td>
+      <td><span class="d2-gap">✗ Absent</span></td>
+      <td class="std-cell">Not in<br>data</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<footer>
+  <span>JDC FSU · Material Support Pilot Review · March 2026</span>
+  <span>Source: eligibility_criteria_bank_card_2026_all_regions.xlsx · Olga Statland email July 2025</span>
+  <span>Confidential — Senior Leadership</span>
+</footer>
+
+</div>
+</body>
+</html>
